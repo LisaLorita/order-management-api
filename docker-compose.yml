@@ -1,0 +1,33 @@
+services:
+  postgres:
+      image: postgres:15-alpine
+      container_name: order-postgres
+      restart: unless-stopped
+      env_file:
+        - .env
+      environment:
+        POSTGRES_DB: ${DB_NAME}
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+      ports:
+        - "5433:5432"
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+  app:
+      build: .
+      container_name: order-api
+      restart: unless-stopped
+      env_file:
+        - .env
+      ports:
+        - "8080:8080"
+      depends_on:
+        - postgres
+      links:
+        - postgres
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+        SPRING_DATASOURCE_USERNAME: ${DB_USER}
+        SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+volumes:
+  pgdata:
