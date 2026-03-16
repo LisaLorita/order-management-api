@@ -2,11 +2,13 @@ package io.github.lisalorita.ordermanagement.users.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class CreateUserRequest {
 
   @NotBlank(message = "Name is required")
+  @Pattern(regexp = "^[\\p{L} ]+$", message = "Name must contain only letters")
   private String name;
 
   @NotBlank(message = "Email is required")
