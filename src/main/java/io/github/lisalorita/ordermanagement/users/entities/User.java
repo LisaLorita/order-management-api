@@ -1,12 +1,12 @@
-package io.github.lisalorita.ordermanagement.users.entity;
+package io.github.lisalorita.ordermanagement.users.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 
-import io.github.lisalorita.ordermanagement.comments.entity.Comment;
-import io.github.lisalorita.ordermanagement.orders.entity.Order;
+import io.github.lisalorita.ordermanagement.comments.entities.Comment;
+import io.github.lisalorita.ordermanagement.orders.entities.Order;
 
 @Entity
 @Table(name = "users")

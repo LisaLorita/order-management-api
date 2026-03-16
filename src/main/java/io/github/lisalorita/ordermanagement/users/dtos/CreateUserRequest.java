@@ -1,4 +1,4 @@
-package io.github.lisalorita.ordermanagement.users.dto;
+package io.github.lisalorita.ordermanagement.users.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

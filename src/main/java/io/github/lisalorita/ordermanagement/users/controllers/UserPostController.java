@@ -1,4 +1,4 @@
-package io.github.lisalorita.ordermanagement.users.controller;
+package io.github.lisalorita.ordermanagement.users.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.lisalorita.ordermanagement.users.dto.CreateUserRequest;
-import io.github.lisalorita.ordermanagement.users.dto.CreateUserResponse;
-import io.github.lisalorita.ordermanagement.users.service.UserCreator;
+import io.github.lisalorita.ordermanagement.users.dtos.CreateUserRequest;
+import io.github.lisalorita.ordermanagement.users.dtos.CreateUserResponse;
+import io.github.lisalorita.ordermanagement.users.services.UserCreator;
 import jakarta.validation.Valid;
 
 @RestController

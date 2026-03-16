@@ -1,4 +1,4 @@
-package io.github.lisalorita.ordermanagement.users.dto;
+package io.github.lisalorita.ordermanagement.users.dtos;
 
 public class CreateUserResponse {
   private Long id;
