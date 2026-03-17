@@ -1,4 +1,4 @@
-package io.github.lisalorita.ordermanagement.products.entity;
+package io.github.lisalorita.ordermanagement.products.entities;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.lisalorita.ordermanagement.orderitems.entity.OrderItem;
+import io.github.lisalorita.ordermanagement.orderitems.entities.OrderItem;
 
 @Entity
 @Table(name = "products")

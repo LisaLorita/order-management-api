@@ -1,10 +1,9 @@
-package io.github.lisalorita.ordermanagement.comments.entity;
+package io.github.lisalorita.ordermanagement.comments.entities;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
-
-import io.github.lisalorita.ordermanagement.users.entity.User;
-import io.github.lisalorita.ordermanagement.orders.entity.Order;
+import io.github.lisalorita.ordermanagement.orders.entities.Order;
+import io.github.lisalorita.ordermanagement.users.entities.User;
 
 @Entity
 @Table(name = "comments")

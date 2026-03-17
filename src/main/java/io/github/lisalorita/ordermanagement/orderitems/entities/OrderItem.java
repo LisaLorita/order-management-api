@@ -1,11 +1,11 @@
-package io.github.lisalorita.ordermanagement.orderitems.entity;
+package io.github.lisalorita.ordermanagement.orderitems.entities;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import io.github.lisalorita.ordermanagement.orders.entity.Order;
-import io.github.lisalorita.ordermanagement.products.entity.Product;
+import io.github.lisalorita.ordermanagement.orders.entities.Order;
+import io.github.lisalorita.ordermanagement.products.entities.Product;
 
 @Entity
 @Table(name = "order_items")
