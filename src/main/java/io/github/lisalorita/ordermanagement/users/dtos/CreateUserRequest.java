@@ -1,9 +1,9 @@
 package io.github.lisalorita.ordermanagement.users.dtos;
 
+import io.github.lisalorita.ordermanagement.shared.validation.StrongPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 public class CreateUserRequest {
 
@@ -16,7 +16,7 @@ public class CreateUserRequest {
   private String email;
 
   @NotBlank(message = "Password is required")
-  @Size(min = 6, message = "Password must be at least 6 characters")
+  @StrongPassword(minLength = 8, minLowercase = 1, minUppercase = 1, minNumbers = 1, minSymbols = 1)
   private String password;
 
   public CreateUserRequest() {
