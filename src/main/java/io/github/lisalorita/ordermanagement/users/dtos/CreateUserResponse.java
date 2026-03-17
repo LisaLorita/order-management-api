@@ -1,17 +1,19 @@
 package io.github.lisalorita.ordermanagement.users.dtos;
 
+import java.util.UUID;
+
 public class CreateUserResponse {
-  private Long id;
+  private UUID id;
   private String name;
   private String email;
 
-  public CreateUserResponse(Long id, String name, String email) {
+  public CreateUserResponse(UUID id, String name, String email) {
     this.id = id;
     this.name = name;
     this.email = email;
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 

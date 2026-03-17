@@ -3,7 +3,10 @@ package io.github.lisalorita.ordermanagement.users.entities;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.ArrayList;
+
+import org.hibernate.annotations.UuidGenerator;
 
 import io.github.lisalorita.ordermanagement.comments.entities.Comment;
 import io.github.lisalorita.ordermanagement.orders.entities.Order;
@@ -13,7 +16,8 @@ import io.github.lisalorita.ordermanagement.orders.entities.Order;
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @UuidGenerator
+  private UUID id;
 
   @Column(nullable = false)
   private String name;
@@ -50,7 +54,7 @@ public class User {
     updatedAt = LocalDateTime.now();
   }
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
