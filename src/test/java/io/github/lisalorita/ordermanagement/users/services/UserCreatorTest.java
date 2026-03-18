@@ -18,11 +18,15 @@ import io.github.lisalorita.ordermanagement.users.dtos.CreateUserResponse;
 import io.github.lisalorita.ordermanagement.users.entities.User;
 import io.github.lisalorita.ordermanagement.users.exceptions.EmailAlreadyExists;
 import io.github.lisalorita.ordermanagement.users.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class UserCreatorTest {
 
   @Mock
   private UserRepository userRepository;
+
+  @Mock
+  private PasswordEncoder passwordEncoder;
 
   @InjectMocks
   private UserCreator userCreator;
@@ -48,6 +52,7 @@ class UserCreatorTest {
     savedUser.setEmail(request.getEmail());
 
     when(userRepository.existsByEmail(request.getEmail())).thenReturn(false);
+    when(passwordEncoder.encode(request.getPassword())).thenReturn("hashed-password");
     when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
     CreateUserResponse response = userCreator.run(request);
