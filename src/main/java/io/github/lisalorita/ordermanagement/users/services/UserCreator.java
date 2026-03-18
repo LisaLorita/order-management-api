@@ -8,14 +8,17 @@ import io.github.lisalorita.ordermanagement.users.dtos.CreateUserResponse;
 import io.github.lisalorita.ordermanagement.users.entities.User;
 import io.github.lisalorita.ordermanagement.users.repositories.UserRepository;
 import io.github.lisalorita.ordermanagement.users.exceptions.EmailAlreadyExists;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserCreator {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserCreator(UserRepository userRepository) {
+    public UserCreator(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -26,7 +29,7 @@ public class UserCreator {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         User savedUser = userRepository.save(user);
 
