@@ -11,10 +11,29 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import io.github.lisalorita.ordermanagement.users.exceptions.EmailAlreadyExists;
+import io.github.lisalorita.ordermanagement.users.exceptions.UserNotFound;
 import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+        @ExceptionHandler(UserNotFound.class)
+        public ResponseEntity<ApiErrorResponse> handleUserNotFound(
+                        UserNotFound ex,
+                        HttpServletRequest request) {
+                HttpStatus status = HttpStatus.NOT_FOUND;
+
+                ApiErrorResponse body = new ApiErrorResponse(
+                                Instant.now(),
+                                status.value(),
+                                status.getReasonPhrase(),
+                                "USER_NOT_FOUND",
+                                ex.getMessage(),
+                                request.getRequestURI(),
+                                List.of());
+
+                return ResponseEntity.status(status).body(body);
+        }
 
         @ExceptionHandler(EmailAlreadyExists.class)
         public ResponseEntity<ApiErrorResponse> handleEmailAlreadyExists(
