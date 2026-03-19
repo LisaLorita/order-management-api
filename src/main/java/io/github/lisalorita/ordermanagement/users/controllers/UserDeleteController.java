@@ -13,6 +13,9 @@ import java.util.UUID;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.github.lisalorita.ordermanagement.shared.api.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -32,8 +35,8 @@ public class UserDeleteController {
   )
   @ApiResponses(value = {
       @ApiResponse(responseCode = "204", description = "User deleted successfully"),
-      @ApiResponse(responseCode = "400", description = "Invalid UUID format"),
-      @ApiResponse(responseCode = "404", description = "User not found")
+      @ApiResponse(responseCode = "400", description = "Invalid UUID format", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
+      @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
   })
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {

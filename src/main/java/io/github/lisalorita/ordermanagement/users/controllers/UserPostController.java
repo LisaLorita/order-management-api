@@ -13,6 +13,9 @@ import io.github.lisalorita.ordermanagement.users.services.UserCreator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.github.lisalorita.ordermanagement.shared.api.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -33,8 +36,8 @@ public class UserPostController {
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "User created successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid request data (validation failed)"),
-        @ApiResponse(responseCode = "409", description = "Email already exists")
+        @ApiResponse(responseCode = "400", description = "Invalid request data (validation failed)", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(responseCode = "409", description = "Email already exists", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     @PostMapping
     public ResponseEntity<CreateUserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
