@@ -36,6 +36,7 @@ public class UserCreator {
         return new CreateUserResponse(
                 savedUser.getId(),
                 savedUser.getName(),
-                savedUser.getEmail());
+                savedUser.getEmail(),
+                savedUser.getCreatedAt());
     }
 }

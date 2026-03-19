@@ -1,5 +1,6 @@
 package io.github.lisalorita.ordermanagement.users.dtos;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,10 +17,14 @@ public class CreateUserResponse {
   @Schema(description = "User email")
   private String email;
 
-  public CreateUserResponse(UUID id, String name, String email) {
+  @Schema(description = "User creation date")
+  private LocalDateTime createdAt;
+
+  public CreateUserResponse(UUID id, String name, String email, LocalDateTime createdAt) {
     this.id = id;
     this.name = name;
     this.email = email;
+    this.createdAt = createdAt;
   }
 
   public UUID getId() {
@@ -32,5 +37,9 @@ public class CreateUserResponse {
 
   public String getEmail() {
     return email;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
   }
 }
