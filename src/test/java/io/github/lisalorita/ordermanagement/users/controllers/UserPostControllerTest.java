@@ -51,7 +51,7 @@ class UserPostControllerTest {
         request.setPassword("Password123!");
 
         UUID id = UUID.randomUUID();
-        CreateUserResponse response = new CreateUserResponse(id, "Alba", "alba@example.com");
+        CreateUserResponse response = new CreateUserResponse(id, "Alba", "alba@example.com", java.time.LocalDateTime.now());
 
         when(userCreator.run(any(CreateUserRequest.class))).thenReturn(response);
 
