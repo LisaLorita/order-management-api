@@ -1,0 +1,40 @@
+package io.github.lisalorita.ordermanagement.auth.services;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import io.github.lisalorita.ordermanagement.auth.dtos.LoginRequest;
+import io.github.lisalorita.ordermanagement.auth.dtos.LoginResponse;
+import io.github.lisalorita.ordermanagement.auth.infrastructure.JwtTokenProvider;
+import io.github.lisalorita.ordermanagement.users.entities.User;
+import io.github.lisalorita.ordermanagement.users.repositories.UserRepository;
+
+@Service
+public class UserAuthenticator {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public UserAuthenticator(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtTokenProvider jwtTokenProvider) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+    public LoginResponse run(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        String token = jwtTokenProvider.generateToken(user.getEmail());
+
+        return new LoginResponse(token);
+    }
+}
