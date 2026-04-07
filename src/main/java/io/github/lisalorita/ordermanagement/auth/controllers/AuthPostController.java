@@ -46,29 +46,7 @@ public class AuthPostController {
     @Operation(summary = "Refresh Token", description = "Obtains a new access token using a valid refresh token and rotates it")
     @PostMapping("/refresh")
     public ResponseEntity<TokenRefreshResponse> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
-        String requestRefreshToken = request.getRefreshToken();
-        String[] parts = requestRefreshToken.split(":");
-        if (parts.length != 2) {
-            throw new RefreshTokenException(requestRefreshToken, "Invalid refresh token format");
-        }
-
-        String identifier = parts[0];
-        String secret = parts[1];
-
-        return refreshTokenService.findByIdentifier(identifier)
-                .map(refreshTokenService::verifyExpiration)
-                .map(token -> {
-                    refreshTokenService.verifySecret(token, secret);
-                    String userEmail = token.getUser().getEmail();
-
-                    // Rotation: Invalidate the current one and issue a new one
-                    refreshTokenService.deleteToken(token);
-                    String newRefreshToken = refreshTokenService.createRefreshToken(userEmail);
-
-                    String accessToken = jwtTokenProvider.generateToken(userEmail);
-                    return ResponseEntity.ok(new TokenRefreshResponse(accessToken, newRefreshToken));
-                })
-                .orElseThrow(() -> new RefreshTokenException(identifier, "Refresh token not found"));
+        return ResponseEntity.ok(refreshTokenService.refresh(request.getRefreshToken()));
     }
 
 
