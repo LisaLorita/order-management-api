@@ -21,6 +21,10 @@ public class JwtTokenProvider {
   @Value("${app.jwt.secret}")
   private String secretKey;
 
+  @Value("${app.jwt.expiration-ms}")
+  private long jwtExpiration;
+
+
   public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);
   }
@@ -40,7 +44,7 @@ public class JwtTokenProvider {
         .setClaims(extraClaims)
         .setSubject(username)
         .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
+        .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
         .signWith(getSignInKey(), SignatureAlgorithm.HS256)
         .compact();
   }
