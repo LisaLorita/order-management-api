@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import io.github.lisalorita.ordermanagement.auth.dtos.LoginRequest;
 import io.github.lisalorita.ordermanagement.auth.dtos.LoginResponse;
+import io.github.lisalorita.ordermanagement.auth.exceptions.InvalidCredentialsException;
 import io.github.lisalorita.ordermanagement.auth.infrastructure.JwtTokenProvider;
 import io.github.lisalorita.ordermanagement.users.entities.User;
 import io.github.lisalorita.ordermanagement.users.repositories.UserRepository;
@@ -70,6 +71,6 @@ class UserAuthenticatorTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         LoginRequest request = new LoginRequest(email, "pw");
-        assertThrows(RuntimeException.class, () -> userAuthenticator.run(request));
+        assertThrows(InvalidCredentialsException.class, () -> userAuthenticator.run(request));
     }
 }

@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.lisalorita.ordermanagement.auth.dtos.LoginRequest;
 import io.github.lisalorita.ordermanagement.auth.dtos.LoginResponse;
 import io.github.lisalorita.ordermanagement.auth.services.UserAuthenticator;
+import io.github.lisalorita.ordermanagement.auth.exceptions.InvalidCredentialsException;
 import io.github.lisalorita.ordermanagement.shared.api.GlobalExceptionHandler;
 import io.github.lisalorita.ordermanagement.shared.api.SecurityConfig;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -82,5 +83,21 @@ class AuthPostControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("POST /auth/login should return 401 for invalid credentials")
+    void shouldReturn401ForInvalidCredentials() throws Exception {
+        LoginRequest request = new LoginRequest("user@example.com", "wrong-password");
+
+        when(userAuthenticator.run(any(LoginRequest.class)))
+                .thenThrow(new InvalidCredentialsException());
+
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("INVALID_CREDENTIALS"))
+                .andExpect(jsonPath("$.message").value("Invalid credentials"));
     }
 }

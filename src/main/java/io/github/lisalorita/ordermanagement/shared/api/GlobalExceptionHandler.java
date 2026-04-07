@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import io.github.lisalorita.ordermanagement.users.exceptions.EmailAlreadyExists;
 import io.github.lisalorita.ordermanagement.users.exceptions.UserNotFound;
+import io.github.lisalorita.ordermanagement.auth.exceptions.InvalidCredentialsException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -47,6 +48,24 @@ public class GlobalExceptionHandler {
                                 status.value(),
                                 status.getReasonPhrase(),
                                 "USER_NOT_FOUND",
+                                ex.getMessage(),
+                                request.getRequestURI(),
+                                List.of());
+
+                return ResponseEntity.status(status).body(body);
+        }
+
+        @ExceptionHandler(InvalidCredentialsException.class)
+        public ResponseEntity<ApiErrorResponse> handleInvalidCredentials(
+                        InvalidCredentialsException ex,
+                        HttpServletRequest request) {
+                HttpStatus status = HttpStatus.UNAUTHORIZED;
+
+                ApiErrorResponse body = new ApiErrorResponse(
+                                Instant.now(),
+                                status.value(),
+                                status.getReasonPhrase(),
+                                "INVALID_CREDENTIALS",
                                 ex.getMessage(),
                                 request.getRequestURI(),
                                 List.of());
