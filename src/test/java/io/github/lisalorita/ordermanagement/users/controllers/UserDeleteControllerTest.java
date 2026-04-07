@@ -20,9 +20,16 @@ import io.github.lisalorita.ordermanagement.users.exceptions.UserNotFound;
 import io.github.lisalorita.ordermanagement.users.services.UserDeleter;
 
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import io.github.lisalorita.ordermanagement.auth.infrastructure.JwtAuthenticationFilter;
+import io.github.lisalorita.ordermanagement.auth.infrastructure.JwtTokenProvider;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @WebMvcTest(UserDeleteController.class)
 @Import(GlobalExceptionHandler.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserDeleteControllerTest {
 
     @Autowired
@@ -30,6 +37,21 @@ class UserDeleteControllerTest {
 
     @MockitoBean
     private UserDeleter userDeleter;
+
+    @MockitoBean
+    private JwtAuthenticationFilter jwtAuthFilter;
+
+    @MockitoBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockitoBean
+    private AuthenticationProvider authenticationProvider;
+
+    @MockitoBean
+    private UserDetailsService userDetailsService;
+
+    @MockitoBean
+    private PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("DELETE /users/{id} should return 204 No Content")

@@ -24,9 +24,16 @@ import io.github.lisalorita.ordermanagement.users.dtos.CreateUserResponse;
 import io.github.lisalorita.ordermanagement.users.services.UserCreator;
 
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import io.github.lisalorita.ordermanagement.auth.infrastructure.JwtAuthenticationFilter;
+import io.github.lisalorita.ordermanagement.auth.infrastructure.JwtTokenProvider;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @WebMvcTest(UserPostController.class)
 @Import(GlobalExceptionHandler.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserPostControllerTest {
 
     @Autowired
@@ -36,6 +43,21 @@ class UserPostControllerTest {
 
     @MockitoBean
     private UserCreator userCreator;
+
+    @MockitoBean
+    private JwtAuthenticationFilter jwtAuthFilter;
+
+    @MockitoBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockitoBean
+    private AuthenticationProvider authenticationProvider;
+
+    @MockitoBean
+    private UserDetailsService userDetailsService;
+
+    @MockitoBean
+    private PasswordEncoder passwordEncoder;
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
