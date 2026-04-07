@@ -25,6 +25,7 @@ import io.github.lisalorita.ordermanagement.auth.dtos.LoginRequest;
 import io.github.lisalorita.ordermanagement.auth.dtos.LoginResponse;
 import io.github.lisalorita.ordermanagement.auth.services.UserAuthenticator;
 import io.github.lisalorita.ordermanagement.auth.exceptions.InvalidCredentialsException;
+import io.github.lisalorita.ordermanagement.auth.exceptions.RefreshTokenException;
 import io.github.lisalorita.ordermanagement.auth.services.RefreshTokenService;
 import io.github.lisalorita.ordermanagement.shared.api.GlobalExceptionHandler;
 import io.github.lisalorita.ordermanagement.shared.api.SecurityConfig;
@@ -117,24 +118,15 @@ class AuthPostControllerTest {
     }
 
     @Test
-
     @DisplayName("POST /auth/refresh should return 200 and new tokens")
     void shouldRefreshTokenSuccessfully() throws Exception {
-        String identifier = "identifier";
-        String secret = "secret";
-        String combinedToken = identifier + ":" + secret;
+        String combinedToken = "identifier:secret";
         TokenRefreshRequest request = new TokenRefreshRequest();
         request.setRefreshToken(combinedToken);
 
-        RefreshToken refreshToken = new RefreshToken();
-        io.github.lisalorita.ordermanagement.users.entities.User user = new io.github.lisalorita.ordermanagement.users.entities.User();
-        user.setEmail("test@test.com");
-        refreshToken.setUser(user);
+        TokenRefreshResponse response = new TokenRefreshResponse("new-access-token", "new-identifier:new-secret");
 
-        when(refreshTokenService.findByIdentifier(identifier)).thenReturn(Optional.of(refreshToken));
-        when(refreshTokenService.verifyExpiration(any())).thenReturn(refreshToken);
-        when(refreshTokenService.createRefreshToken(any())).thenReturn("new-identifier:new-secret");
-        when(jwtTokenProvider.generateToken(any())).thenReturn("new-access-token");
+        when(refreshTokenService.refresh(combinedToken)).thenReturn(response);
 
         mockMvc.perform(post("/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -142,8 +134,6 @@ class AuthPostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value("new-access-token"))
                 .andExpect(jsonPath("$.refreshToken").value("new-identifier:new-secret"));
-
-        verify(refreshTokenService).deleteToken(refreshToken);
     }
 
     @Test
@@ -151,6 +141,9 @@ class AuthPostControllerTest {
     void shouldReturn400ForMalformedToken() throws Exception {
         TokenRefreshRequest request = new TokenRefreshRequest();
         request.setRefreshToken("malformed-token"); // no colon
+
+        when(refreshTokenService.refresh("malformed-token"))
+                .thenThrow(new RefreshTokenException("malformed-token", "Invalid refresh token format"));
 
         mockMvc.perform(post("/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)

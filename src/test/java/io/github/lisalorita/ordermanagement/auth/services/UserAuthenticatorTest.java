@@ -32,6 +32,9 @@ class UserAuthenticatorTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    @Mock
+    private RefreshTokenService refreshTokenService;
+
     @InjectMocks
     private UserAuthenticator userAuthenticator;
 
@@ -54,14 +57,17 @@ class UserAuthenticatorTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(password, user.getPassword())).thenReturn(true);
         when(jwtTokenProvider.generateToken(email)).thenReturn(token);
+        when(refreshTokenService.createRefreshToken(email)).thenReturn("refresh-token");
 
         LoginRequest request = new LoginRequest(email, password);
         LoginResponse response = userAuthenticator.run(request);
 
         assertNotNull(response);
         assertEquals(token, response.getToken());
+        assertEquals("refresh-token", response.getRefreshToken());
         verify(userRepository).findByEmail(email);
         verify(jwtTokenProvider).generateToken(email);
+        verify(refreshTokenService).createRefreshToken(email);
     }
 
     @Test
@@ -71,6 +77,23 @@ class UserAuthenticatorTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         LoginRequest request = new LoginRequest(email, "pw");
+        assertThrows(InvalidCredentialsException.class, () -> userAuthenticator.run(request));
+    }
+
+    @Test
+    @DisplayName("Should throw exception for password mismatch")
+    void shouldThrowExceptionForPasswordMismatch() {
+        String email = "test@example.com";
+        String password = "wrong-password";
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword("hashed-password");
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(password, user.getPassword())).thenReturn(false);
+
+        LoginRequest request = new LoginRequest(email, password);
         assertThrows(InvalidCredentialsException.class, () -> userAuthenticator.run(request));
     }
 }

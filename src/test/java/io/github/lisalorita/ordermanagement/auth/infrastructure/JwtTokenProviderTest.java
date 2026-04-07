@@ -16,6 +16,7 @@ class JwtTokenProviderTest {
     void setUp() {
         jwtTokenProvider = new JwtTokenProvider();
         ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", SECRET_KEY);
+        ReflectionTestUtils.setField(jwtTokenProvider, "jwtExpiration", 3600000L); // 1 hour
     }
 
     @Test

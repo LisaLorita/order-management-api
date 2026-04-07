@@ -1,7 +1,9 @@
 package io.github.lisalorita.ordermanagement.auth.services;
 
+import io.github.lisalorita.ordermanagement.auth.dtos.TokenRefreshResponse;
 import io.github.lisalorita.ordermanagement.auth.entities.RefreshToken;
 import io.github.lisalorita.ordermanagement.auth.exceptions.RefreshTokenException;
+import io.github.lisalorita.ordermanagement.auth.infrastructure.JwtTokenProvider;
 import io.github.lisalorita.ordermanagement.auth.repositories.RefreshTokenRepository;
 import io.github.lisalorita.ordermanagement.users.entities.User;
 import io.github.lisalorita.ordermanagement.users.repositories.UserRepository;
@@ -34,6 +36,9 @@ class RefreshTokenServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
 
     @InjectMocks
     private RefreshTokenService refreshTokenService;
@@ -114,5 +119,31 @@ class RefreshTokenServiceTest {
         RefreshToken token = new RefreshToken();
         refreshTokenService.deleteToken(token);
         verify(refreshTokenRepository, times(1)).delete(token);
+    }
+
+    @Test
+    @DisplayName("refresh should return new tokens for valid request")
+    void shouldRefreshSuccessfully() {
+        String combinedToken = "id:secret";
+        RefreshToken token = new RefreshToken();
+        User user = new User();
+        user.setEmail("user@test.com");
+        token.setUser(user);
+        token.setIdentifier("id");
+        token.setToken("hashed-secret");
+        token.setExpiryDate(Instant.now().plusSeconds(3600));
+
+        when(refreshTokenRepository.findByIdentifier("id")).thenReturn(Optional.of(token));
+        when(passwordEncoder.matches("secret", "hashed-secret")).thenReturn(true);
+        when(userRepository.findByEmail("user@test.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode(any())).thenReturn("new-hashed-secret");
+        when(jwtTokenProvider.generateToken("user@test.com")).thenReturn("new-access-token");
+
+        TokenRefreshResponse response = refreshTokenService.refresh(combinedToken);
+
+        assertNotNull(response);
+        assertEquals("new-access-token", response.getAccessToken());
+        verify(refreshTokenRepository).delete(token);
+        verify(refreshTokenRepository).save(any(RefreshToken.class));
     }
 }
