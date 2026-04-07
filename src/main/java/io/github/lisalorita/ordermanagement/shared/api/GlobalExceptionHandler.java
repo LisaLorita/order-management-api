@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import io.github.lisalorita.ordermanagement.users.exceptions.EmailAlreadyExists;
 import io.github.lisalorita.ordermanagement.users.exceptions.UserNotFound;
 import io.github.lisalorita.ordermanagement.auth.exceptions.InvalidCredentialsException;
+import io.github.lisalorita.ordermanagement.auth.exceptions.RefreshTokenException;
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
@@ -90,6 +92,25 @@ public class GlobalExceptionHandler {
 
                 return ResponseEntity.status(status).body(body);
         }
+        
+        @ExceptionHandler(RefreshTokenException.class)
+        public ResponseEntity<ApiErrorResponse> handleRefreshTokenException(
+                        RefreshTokenException ex,
+                        HttpServletRequest request) {
+                HttpStatus status = HttpStatus.FORBIDDEN;
+
+                ApiErrorResponse body = new ApiErrorResponse(
+                                Instant.now(),
+                                status.value(),
+                                status.getReasonPhrase(),
+                                "REFRESH_TOKEN_ERROR",
+                                ex.getMessage(),
+                                request.getRequestURI(),
+                                List.of());
+
+                return ResponseEntity.status(status).body(body);
+        }
+
 
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiErrorResponse> handleValidation(
