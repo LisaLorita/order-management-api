@@ -41,9 +41,9 @@ public class UserAuthenticator {
         }
 
         String token = jwtTokenProvider.generateToken(user.getEmail());
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+        String refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
 
-        return new LoginResponse(token, refreshToken.getToken());
+        return new LoginResponse(token, refreshToken);
 
     }
 }

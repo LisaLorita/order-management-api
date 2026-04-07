@@ -15,7 +15,11 @@ public class RefreshToken {
     private User user;
 
     @Column(nullable = false, unique = true)
+    private String identifier;
+
+    @Column(nullable = false)
     private String token;
+
 
     @Column(nullable = false)
     private Instant expiryDate;
@@ -38,9 +42,18 @@ public class RefreshToken {
         this.user = user;
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
     public String getToken() {
         return token;
     }
+
 
     public void setToken(String token) {
         this.token = token;
